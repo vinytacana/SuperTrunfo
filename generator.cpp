@@ -82,26 +82,46 @@ void carregaCartas(Carta baralho[],int & totalCartas){
     ifstream fin;
     fin.open("baralhos.dat", ios_base::in| ios_base::binary);
     if(!fin.is_open()){
-        cout<< "Erro ao abrir arquivo"<<endl;
-        exit(EXIT_FAILURE);
+        cout<< "Erro ao abrir arquivo. Criando novo baralho..."<<endl;
+       return;
     }
-    while(fin.read((char*)&baralho, sizeof(Carta))){
-       totalCartas++;
+    char header[8];
+    fin.read(header, 7);
+    header[7]= '\0';
+    if(string(header)!="BARALHO"){
+        cout<<"Arquivo invalido/corrompido"<<endl;
+        fin.close();
+        return;
     }
+    unsigned short totalFile;
+    fin.read((char*)&totalFile, sizeof(totalFile));
+    totalCartas= 0;
+
+    for(int i=0;i<totalFile && i< MaxCartas;i++){
+        fin.read((char*)&baralho[i], sizeof(Carta));
+        totalCartas++;
+    }
+    cout << "Baralho carregado! Cartas: " << totalCartas << endl;
     fin.close();
 }
 
 void salvaCartas(Carta baralho[], int &totalCartas){
     ofstream fout;
-    fout.open("baralhos.dat", ios_base::out| ios_base:: app| ios_base::binary);
+    fout.open("baralhos.dat", ios_base::out| ios_base::binary);
     if(!fout.is_open()){
         cout<<"Erro ao abrir o arquivo!!"<< endl;
-        exit(EXIT_FAILURE);
+        return;
     }else{
-       fout.write((char*)&baralho, sizeof(Carta));
+       fout.write("BARALHO", 7);
+        unsigned short totalFile = totalCartas;
+        fout.write((char*)&totalFile, sizeof(totalFile));
+       for(int i=0;i<totalCartas;i++){
+        fout.write((char*)&baralho[i], sizeof(Carta));
+       }
 
     }
     fout.close();
+     cout << "Baralho salvo com sucesso!" << endl;
 }
 
 int main()
