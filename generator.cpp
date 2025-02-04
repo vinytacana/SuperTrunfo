@@ -48,7 +48,7 @@ void listarCartas(Carta baralho[], int totalCartas)
         cout << "#" << i + 1 << " " << baralho[i].nome << " | "
              << baralho[i].jogos << " jogos | "
              << baralho[i].gols << " gols | "
-             << baralho[i].titulos << " títulos\n";
+             << baralho[i].titulos << " titulos\n";
     }
 }
 void import(Carta baralho[], int &totalCartas)
@@ -123,6 +123,47 @@ void salvaCartas(Carta baralho[], int &totalCartas){
     fout.close();
      cout << "Baralho salvo com sucesso!" << endl;
 }
+void alterar(Carta baralho[], int &totalCartas){
+    cout<< "\n\t-----Atualizar Cartas\n\t-----";
+    listarCartas(baralho, totalCartas);
+    int numprocurado;
+    cout << "Digite o numero da carta: "<< endl;
+    cin >> numprocurado;
+    for(int i=0;i< totalCartas && i < MaxCartas;i++){
+        if(numprocurado == i+1){
+            cout << "Alterando a carta #"<< numprocurado<<"("<<baralho[i].nome<< ")"<<endl;
+            cin.ignore();
+            cin.getline(baralho[i].nome, sizeof(baralho[i].nome));
+            cout<< "Nova quantidade de jogos: "<< endl;
+            cin>> baralho[i].jogos;
+            cout<< "Nova quantidade de gols: "<< endl;
+            cin>> baralho[i].gols;
+            cout<< "Nova quantidade de titulos: "<< endl;
+            cin >> baralho[i].titulos;
+
+            cout << "Carta atualizada com sucesso!!!" << endl;
+            break;
+        }else{
+            cout<< "Carta nao encontrada! numero invalido."<< endl;
+
+        }
+    }
+}
+void excluir(Carta baralho[], int &totalCartas){
+    cout<< "\n\t-----Excluir Cartas\n\t-----";
+    listarCartas(baralho, totalCartas);
+    int numprocurado;
+    cout << "Digite o numero da carrta: "<< endl;
+    cin >>numprocurado;
+    for(int i=0;i< totalCartas;i++){
+        if(numprocurado== i+1){
+            baralho[i]= baralho[i+1];
+        }else{
+            cout<< "Carta nao encontrada! numero invalido."<< endl;
+        }
+        totalCartas--;
+    }
+}
 
 int main()
 {
@@ -138,6 +179,8 @@ int main()
         cout << "1- Cadastrar Carta\n";
         cout << "2- Listar Cartas\n";
         cout << "3- Importar Cartas\n";
+        cout << "4- Alterar\n";
+        cout << "5- Excluir\n";
         cout << "0- Sair\n";
         cout << "Escolha uma opcao: ";
         cin >> opcao;
