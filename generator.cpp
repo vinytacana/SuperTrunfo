@@ -62,7 +62,7 @@ void import(Carta baralho[], int &totalCartas)
     if (!fin.is_open())
     {
         cout << "Erro ao abriri o arquivo" << endl;
-        cout<<path;
+        cout << path;
         exit(EXIT_FAILURE);
     }
 
@@ -78,96 +78,118 @@ void import(Carta baralho[], int &totalCartas)
     fin.close();
 }
 
-void carregaCartas(Carta baralho[],int & totalCartas){
+void carregaCartas(Carta baralho[], int &totalCartas)
+{
     ifstream fin;
-    fin.open("baralhos.dat", ios_base::in| ios_base::binary);
-    if(!fin.is_open()){
-        cout<< "Erro ao abrir arquivo. Criando novo baralho..."<<endl;
-       return;
+    fin.open("baralhos.dat", ios_base::in | ios_base::binary);
+    if (!fin.is_open())
+    {
+        cout << "Erro ao abrir arquivo. Criando novo baralho..." << endl;
+        return;
     }
     char header[8];
     fin.read(header, 7);
-    header[7]= '\0';
-    if(string(header)!="BARALHO"){
-        cout<<"Arquivo invalido/corrompido"<<endl;
+    header[7] = '\0';
+    if (string(header) != "BARALHO")
+    {
+        cout << "Arquivo invalido/corrompido" << endl;
         fin.close();
         return;
     }
     unsigned short totalFile;
-    fin.read((char*)&totalFile, sizeof(totalFile));
-    totalCartas= 0;
+    fin.read((char *)&totalFile, sizeof(totalFile));
+    totalCartas = 0;
 
-    for(int i=0;i<totalFile && i< MaxCartas;i++){
-        fin.read((char*)&baralho[i], sizeof(Carta));
+    for (int i = 0; i < totalFile && i < MaxCartas; i++)
+    {
+        fin.read((char *)&baralho[i], sizeof(Carta));
         totalCartas++;
     }
     cout << "Baralho carregado! Cartas: " << totalCartas << endl;
     fin.close();
 }
 
-void salvaCartas(Carta baralho[], int &totalCartas){
+void salvaCartas(Carta baralho[], int &totalCartas)
+{
     ofstream fout;
-    fout.open("baralhos.dat", ios_base::out| ios_base::binary);
-    if(!fout.is_open()){
-        cout<<"Erro ao abrir o arquivo!!"<< endl;
+    fout.open("baralhos.dat", ios_base::out | ios_base::binary);
+    if (!fout.is_open())
+    {
+        cout << "Erro ao abrir o arquivo!!" << endl;
         return;
-    }else{
-       fout.write("BARALHO", 7);
+    }
+    else
+    {
+        fout.write("BARALHO", 7);
         unsigned short totalFile = totalCartas;
-        fout.write((char*)&totalFile, sizeof(totalFile));
-       for(int i=0;i<totalCartas;i++){
-        fout.write((char*)&baralho[i], sizeof(Carta));
-       }
-
+        fout.write((char *)&totalFile, sizeof(totalFile));
+        for (int i = 0; i < totalCartas; i++)
+        {
+            fout.write((char *)&baralho[i], sizeof(Carta));
+        }
     }
     fout.close();
-     cout << "Baralho salvo com sucesso!" << endl;
+    cout << "Baralho salvo com sucesso!" << endl;
 }
-void alterar(Carta baralho[], int &totalCartas){
-    cout<< "\n\t-----Atualizar Cartas\n\t-----";
+void alterar(Carta baralho[], int &totalCartas)
+{
+    cout << "\n\t-----Atualizar Cartas\n\t-----";
     listarCartas(baralho, totalCartas);
     int numprocurado;
-    cout << "Digite o numero da carta: "<< endl;
+    cout << "Digite o numero da carta: " << endl;
     cin >> numprocurado;
-    for(int i=0;i< totalCartas && i < MaxCartas;i++){
-        if(numprocurado == i+1){
-            cout << "Alterando a carta #"<< numprocurado<<"("<<baralho[i].nome<< ")"<<endl;
+    for (int i = 0; i < totalCartas && i < MaxCartas; i++)
+    {
+        if (numprocurado == i + 1)
+        {
+            cout << "Alterando a carta #" << numprocurado << "(" << baralho[i].nome << ")" << endl;
             cin.ignore();
             cin.getline(baralho[i].nome, sizeof(baralho[i].nome));
-            cout<< "Nova quantidade de jogos: "<< endl;
-            cin>> baralho[i].jogos;
-            cout<< "Nova quantidade de gols: "<< endl;
-            cin>> baralho[i].gols;
-            cout<< "Nova quantidade de titulos: "<< endl;
+            cout << "Nova quantidade de jogos: " << endl;
+            cin >> baralho[i].jogos;
+            cout << "Nova quantidade de gols: " << endl;
+            cin >> baralho[i].gols;
+            cout << "Nova quantidade de titulos: " << endl;
             cin >> baralho[i].titulos;
 
             cout << "Carta atualizada com sucesso!!!" << endl;
             break;
-        }else{
-            cout<< "Carta nao encontrada! numero invalido."<< endl;
-
+        }
+        else
+        {
+            cout << "Carta nao encontrada! numero invalido." << endl;
         }
     }
 }
-void excluir(Carta baralho[], int &totalCartas){
-    cout<< "\n\t-----Excluir Cartas\n\t-----";
+void excluir(Carta baralho[], int &totalCartas)
+{
+
+    if (totalCartas == 0)
+    {
+        cout << "Nenhuma carta cadastrada para excluir.\n";
+        return;
+    }
+    cout << "\n\t-----Excluir Cartas\n\t-----";
     listarCartas(baralho, totalCartas);
     int numprocurado;
-    cout << "Digite o numero da carrta: "<< endl;
-    cin >>numprocurado;
-    for(int i=0;i< totalCartas;i++){
-        if(numprocurado== i+1){
-            baralho[i]= baralho[i+1];
-        }else{
-            cout<< "Carta nao encontrada! numero invalido."<< endl;
-        }
-        totalCartas--;
+    cout << "Digite o numero da carrta: " << endl;
+    cin >> numprocurado;
+    if ((numprocurado <1) || (numprocurado > totalCartas))
+    {
+        cout << "Numero invalido" << endl;
+        system("pause");
+        return;
     }
+    for (int i = numprocurado - 1; i < totalCartas; i++)
+    {
+        baralho[i] = baralho[i + 1];
+    }
+     totalCartas--;
 }
 
 int main()
 {
-    
+
     Carta baralho[MaxCartas];
     int totalCartas = 0;
     int opcao;
@@ -193,11 +215,17 @@ int main()
         case 2:
             listarCartas(baralho, totalCartas);
             break;
-        case 3: 
+        case 3:
             import(baralho, totalCartas);
             break;
+        case 4:
+            alterar(baralho, totalCartas);
+            break;
+        case 5:
+            excluir(baralho, totalCartas);
+            break;
         case 0:
-            salvaCartas(baralho,totalCartas);
+            salvaCartas(baralho, totalCartas);
             cout << "Saindo...\n";
             break;
         default:
