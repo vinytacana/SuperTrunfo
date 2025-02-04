@@ -49,7 +49,7 @@ is not modified during gameplay.
      git clone https://github.com/vinytacana/SuperTrunfo.git
      cd super-trunfo
 2. Open the solution in Visual Studio:
-   - The solution contains two projects: #### Card Generator and Game .
+   - The solution contains two projects: Card Generator and Game .
    - Set the desired project as the startup project.
 3. Run the Card Generator :
      - Use the menu to add, import, edit, delete, or list cards.
