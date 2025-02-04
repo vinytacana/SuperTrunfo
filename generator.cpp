@@ -78,7 +78,7 @@ void import(Carta baralho[], int &totalCartas)
     fin.close();
 }
 
-void carregaCartas(Carta baralho,int & totalCartas){
+void carregaCartas(Carta baralho[],int & totalCartas){
     ifstream fin;
     fin.open("baralhos.dat", ios_base::in| ios_base::binary);
     if(!fin.is_open()){
@@ -86,19 +86,31 @@ void carregaCartas(Carta baralho,int & totalCartas){
         exit(EXIT_FAILURE);
     }
     while(fin.read((char*)&baralho, sizeof(Carta))){
-        cout<<baralho.nome <<
-        baralho.jogos <<
-        baralho.gols <<
-        baralho.titulos<< endl;
+       totalCartas++;
     }
     fin.close();
 }
 
+void salvaCartas(Carta baralho[], int &totalCartas){
+    ofstream fout;
+    fout.open("baralhos.dat", ios_base::out| ios_base:: app| ios_base::binary);
+    if(!fout.is_open()){
+        cout<<"Erro ao abrir o arquivo!!"<< endl;
+        exit(EXIT_FAILURE);
+    }else{
+       fout.write((char*)&baralho, sizeof(Carta));
+
+    }
+    fout.close();
+}
+
 int main()
 {
+    
     Carta baralho[MaxCartas];
     int totalCartas = 0;
     int opcao;
+    carregaCartas(baralho, totalCartas);
 
     do
     {
@@ -122,6 +134,7 @@ int main()
             import(baralho, totalCartas);
             break;
         case 0:
+            salvaCartas(baralho,totalCartas);
             cout << "Saindo...\n";
             break;
         default:
