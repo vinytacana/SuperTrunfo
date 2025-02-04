@@ -51,15 +51,47 @@ void listarCartas(Carta baralho[], int totalCartas)
              << baralho[i].titulos << " títulos\n";
     }
 }
-void import(Carta baralho[], int &totalCartas){
+void import(Carta baralho[], int &totalCartas)
+{
     ifstream fin;
-     fin.open("maiscartas.txt");
-
-    for(int i=0;i<totalCartas;i++){
-        while(fin>> baralho[i].nome >> baralho[i].jogos>> baralho[i].gols>>baralho[i].titulos){
-            
-        }
+    char path[100];
+    cout << "insira o caminho do arquivo: " << endl;
+    cin.ignore();
+    cin.getline(path, 100);
+    fin.open(path);
+    if (!fin.is_open())
+    {
+        cout << "Erro ao abriri o arquivo" << endl;
+        cout<<path;
+        exit(EXIT_FAILURE);
     }
+
+    while ((totalCartas < MaxCartas) && (fin >> baralho[totalCartas].nome >> baralho[totalCartas].jogos >> baralho[totalCartas].gols >> baralho[totalCartas].titulos))
+    {
+        totalCartas++;
+    }
+    if (totalCartas >= MaxCartas)
+    {
+        cout << "Baralho Cheio!!" << endl;
+    }
+
+    fin.close();
+}
+
+void carregaCartas(Carta baralho,int & totalCartas){
+    ifstream fin;
+    fin.open("baralhos.dat", ios_base::in| ios_base::binary);
+    if(!fin.is_open()){
+        cout<< "Erro ao abrir arquivo"<<endl;
+        exit(EXIT_FAILURE);
+    }
+    while(fin.read((char*)&baralho, sizeof(Carta))){
+        cout<<baralho.nome <<
+        baralho.jogos <<
+        baralho.gols <<
+        baralho.titulos<< endl;
+    }
+    fin.close();
 }
 
 int main()
@@ -73,6 +105,7 @@ int main()
         cout << "\n--- Gerador de Cartas ---\n";
         cout << "1- Cadastrar Carta\n";
         cout << "2- Listar Cartas\n";
+        cout << "3- Importar Cartas\n";
         cout << "0- Sair\n";
         cout << "Escolha uma opcao: ";
         cin >> opcao;
@@ -84,6 +117,9 @@ int main()
             break;
         case 2:
             listarCartas(baralho, totalCartas);
+            break;
+        case 3: 
+            import(baralho, totalCartas);
             break;
         case 0:
             cout << "Saindo...\n";
